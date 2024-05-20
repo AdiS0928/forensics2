@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity, TextInput, ImageBackground } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import * as LocalAuthentication from 'expo-local-authentication';
 
 const Biometric = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  let [isAuthenticated, setIsAuthenticated] = useState(false);
+
   const navigation = useNavigation();
 
   const handleLogin = () => {
@@ -15,6 +18,17 @@ const Biometric = () => {
     
     
   };
+
+  useEffect(() => {
+    async function authenticate() {
+      const result = await LocalAuthentication.authenticateAsync();
+      if(result.success == true){
+        navigation.navigate('otp');
+      }
+      setIsAuthenticated(result.success);
+    }
+    authenticate();
+  }, []);
 
   return (
     <ImageBackground source={require('../assets/ChainGuard/bg.png')} style={styles.backgroundImage}>
